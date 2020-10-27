@@ -2,9 +2,9 @@
  * 轮播图
  */
 
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { View,Text, StyleSheet,Animated ,PanResponder,TouchableOpacity,Dimensions} from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
+// import Icon from 'react-native-vector-icons/Feather';
 
 class Swiper extends Component{
     constructor(props) {
@@ -35,7 +35,6 @@ class Swiper extends Component{
         const index = Math.round(-this.position / this.state.layoutWidth)
         const safeIndex = this.getSafeIndex(index);
         this.scrollTo(safeIndex)
-        // this.props.onChange(safeIndex)
     };
     responder = PanResponder.create({
         // 返回ture时，表示该组件愿意成为触摸事件的响应者，如触摸点击。默认返回false。
@@ -73,7 +72,7 @@ class Swiper extends Component{
         Animated.timing(this.state.positionAnimated, {
             toValue: - toIndex * this.state.layoutWidth,
             duration: 200,
-            // useNativeDriver: true
+            useNativeDriver: false
         }).start(()=>{
             this.setState({
                 index: toIndex
@@ -98,25 +97,36 @@ class Swiper extends Component{
         this.state.positionAnimated.setValue( - this.state.index * nativeEvent.layout.width)
     }
     render(){
-        const {children,wrapperStyle} = this.props;
+        const {children, wrapperStyle, showButtons=true, nextButton, prevButton, showPagination=true, renderPagination, dotStyle, activeDotStyle} = this.props;
         const {index} = this.state
 
+        const len = new Array(children.length).fill(1) || []
+        const active = activeDotStyle || styles.active
         return (
                 <View 
                     style={[styles.wrapper,wrapperStyle]}
                     onLayout={this.handleLayout}
                     {...this.responder.panHandlers}
                 >
-                    <View style={styles.title}>
-                        <TouchableOpacity onPress={()=>this.onChange(-1)}>
-                            <Icon name="chevrons-left" style={styles.operateIcon} />
+                    {showButtons?<Fragment>
+                        <TouchableOpacity onPress={()=>this.onChange(-1)} style={styles.prevIcon}>
+                            {prevButton||<Text style={styles.operateIcon}>{'＜'}</Text>}
                         </TouchableOpacity>
-                        <Text style={styles.tip}>第 {index+1} / {children.length} 件</Text>
-                        <TouchableOpacity onPress={()=>this.onChange(1)}>
-                            <Icon name="chevrons-right" style={styles.operateIcon} />
+                        <TouchableOpacity onPress={()=>this.onChange(1)} style={styles.nextIcon}>
+                            {nextButton||<Text style={styles.operateIcon}>{'＞'}</Text>}
                         </TouchableOpacity>
-                    </View>
-                    
+                    </Fragment>:null}
+                    {
+                        showPagination?
+                        renderPagination?renderPagination
+                        :<View style={styles.dotWrapper}>
+                        {
+                            len.map((v,i)=><TouchableOpacity onPress={()=>this.scrollTo(i)} key={i}>
+                                <View style={[styles.dot,dotStyle,index==i?active:null]}></View>
+                            </TouchableOpacity>)
+                        }
+                        </View>:null
+                    }
                     <Animated.View
                         style={[
                         styles.content,
@@ -139,15 +149,34 @@ class Swiper extends Component{
 }
 const styles = StyleSheet.create({
     wrapper:{
-
+        position:'relative'
     },
     content:{
         flexDirection: 'row',
-        justifyContent:'flex-start'
+        justifyContent:'flex-start',
     },
     operateIcon:{
-        fontSize: 40,
+        width: 40,
+        height: 60,
+        fontSize: 26,
         color: '#fff',
+        margin: 5,
+        fontWeight: "600",
+        textAlign:'center',
+        lineHeight: 60,
+        backgroundColor: 'rgba(0,0,0,.3)',
+    },
+    prevIcon:{
+        position: 'absolute',
+        top: '45%',
+        zIndex: 999,
+        left: -10,
+    },
+    nextIcon:{
+        position: 'absolute',
+        top: '45%',
+        zIndex: 999,
+        right: -10,
     },
     title:{
         flexDirection: 'row',
@@ -160,5 +189,24 @@ const styles = StyleSheet.create({
         lineHeight: 50,
         textAlign: 'center'
     },
+    dotWrapper:{
+        width: Dimensions.get('window').width,
+        flexDirection: 'row',
+        justifyContent:'center',
+        alignItems: 'center',
+        position: 'absolute',
+        bottom: 20,
+        zIndex: 100
+    },
+    dot:{
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: '#d0d0d0',
+        marginRight: 10
+    },
+    active:{
+        backgroundColor:'#03a9f4'
+    }
   });
 export default Swiper;
