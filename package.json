@@ -1,6 +1,6 @@
 {
   "name": "react-native-swiper-x",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "简单的轮播组件",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,10 @@
     "react-native",
     "swiper"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eyes487/react-native-swiper-x"
+  },
   "author": "eyes487",
   "license": "ISC"
 }
