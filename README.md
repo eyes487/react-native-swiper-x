@@ -46,4 +46,4 @@ const styles = StyleSheet.create({
 })
 ```
 ## 效果展示
-![效果展示](http://fs.eyes487.top:9999/uploads/6ab7ed1067416a63b04a6ff536df264c.gif "图1")
+![效果展示](https://www.eyes487.top/fs/uploads/6ab7ed1067416a63b04a6ff536df264c.gif "图1")
