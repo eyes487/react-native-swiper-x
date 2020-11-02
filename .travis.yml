@@ -8,10 +8,12 @@ branches:
     only:
         - master
 
-deploy:
-    provider: npm
-    email: "659721336@qq.com"
-    api_key: "$NPM_TOKEN"
-    skip_cleanup: true
-    on:
-        branch: master
+
+jobs:
+    deploy:
+        provider: npm
+        email: "659721336@qq.com"
+        api_key: "$NPM_TOKEN"
+        skip_cleanup: true
+        on:
+            branch: master
