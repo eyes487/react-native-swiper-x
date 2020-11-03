@@ -6,28 +6,15 @@ node_js:
 os:
  - linux
 
-stages:
- - test
- - name: deploy
+ branches:
+  only:
+    - master
 
-jobs:
- include:
-   - stage: test
-     script:
-       - node --version
-       - npm --version
-       - echo "Testing Started ..."
-       - echo "Testing Finished."
 
-   - stage: deploy
-     script:
-       - echo "NPM Deploying Started ..."
-       - npm version
-       - echo "NPM Building Finished."
-
-     deploy:
-        provider: npm publish
-        email: 659721336@qq.com
-        api_key: "$NPM_TOKEN"
-        on:
-            all_branches: true
+deploy:
+  provider: npm
+  email: 659721336@qq.com
+  api_key: "$NPM_TOKEN"
+  skip_cleanup: true
+  on:
+    branch: master
